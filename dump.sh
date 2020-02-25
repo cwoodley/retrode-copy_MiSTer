@@ -16,7 +16,7 @@
 # Copyright 2020 Cale "Yavin" Woodley
 
 # You can download the latest version of this script from:
-# https://github.com/cwoodley/retrode-dumper
+# https://github.com/cwoodley/retrode-copy_MiSTer
 
 SOURCE=/Volumes/Retrode
 DESTINATION_ROOT=~/stuff/temp/
