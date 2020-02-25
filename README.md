@@ -1,0 +1,1 @@
+This script will look for rom files on your retrode device, and copy them to a target directory.
