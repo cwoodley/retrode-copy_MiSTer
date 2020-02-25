@@ -1,5 +1,5 @@
 #!/usr/local/bin/bash
-
+set -e
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -23,7 +23,7 @@ SOURCE=/Volumes/Retrode # Path to where retrode is mounted
 DESTINATION_ROOT=~/stuff/temp/ # Root path for roms to get copied to e.g Games
 
 # Core specific paths
-# If your DESTINATION_ROOT is Games and PATH_SNES is snes,
+# e.g If your DESTINATION_ROOT is Games and PATH_SNES is snes,
 # *.sfc files will be copied to Games/snes
 PATH_SNES=snes
 PATH_MD=megadrive # Mega Drive/Genesis
@@ -33,12 +33,12 @@ PATH_SMS=sms # Sega Master System & Game Gear
 
 # Do not modify below
 declare -A rompaths
-rompaths=( [sfc]=snes [bin]=$PATH_MD [gb]=$PATH_GB [gba]=$PATH_GBA [sms]=$PATH_SMS [gg]=$PATH_SMS )
+rompaths=( [sfc]=$PATH_SNES [bin]=$PATH_MD [gb]=$PATH_GB [gba]=$PATH_GBA [sms]=$PATH_SMS [gg]=$PATH_SMS )
 
 for ext in "${!rompaths[@]}";
 do
     :
-    echo "Looking for $ext files"
+    echo "Looking for .$ext files"
     # Look for rom files based on file extension
     file=$(find $SOURCE -maxdepth 1 -type f -name "*.$ext")
 
@@ -56,5 +56,5 @@ do
     fi
 done
 
-echo "Didn't find anything in $SOURCE"
+echo "Didn't find any supported rom files in $SOURCE"
 exit 1
