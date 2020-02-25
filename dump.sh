@@ -18,23 +18,35 @@
 # You can download the latest version of this script from:
 # https://github.com/cwoodley/retrode-copy_MiSTer
 
-SOURCE=/Volumes/Retrode
-DESTINATION_ROOT=~/stuff/temp/
+# User settings
+SOURCE=/Volumes/Retrode # Path to where retrode is mounted
+DESTINATION_ROOT=~/stuff/temp/ # Root path for roms to get copied to e.g Games
 
+# Core specific paths
+# If your DESTINATION_ROOT is Games and PATH_SNES is snes,
+# *.sfc files will be copied to Games/snes
+PATH_SNES=snes
+PATH_MD=megadrive # Mega Drive/Genesis
+PATH_GB=gameboy # GB, GBC
+PATH_GBA=gba
+PATH_SMS=sms # Sega Master System & Game Gear
+
+# Do not modify below
 declare -A rominfo
-rominfo=( [sfc]=snes [bin]=gen [gb]=gameboy [gba]=gba [sms]=sms [gg]=gamegear )
+rompaths=( [sfc]=$PATH_SNES [bin]=$PATH_MD [gb]=$PATH_GB [gba]=$PATH_GBA [sms]=$PATH_SMS [gg]=$PATH_SMS )
 
-for i in "${!rominfo[@]}";
+for ext in "${!rompaths[@]}";
 do
     :
-    echo "Looking for $i files"
+    echo "Looking for $ext files"
     # Look for rom files based on file extension
-    file=$(find $SOURCE -maxdepth 1 -type f -name "*.$i")
+    file=$(find $SOURCE -maxdepth 1 -type f -name "*.$ext")
 
     if [ $file ]
     then
-        destination=$DESTINATION_ROOT${rominfo[$i]}/
+        destination=$DESTINATION_ROOT${rompaths[$i]}/
 
+        # check if destination exists and create if we need to
         [ ! -d "$destination" ] && mkdir -p "$destination"
 
         echo "Copying $file to $destination"
