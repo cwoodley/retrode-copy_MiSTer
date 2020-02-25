@@ -32,8 +32,8 @@ PATH_GBA=gba
 PATH_SMS=sms # Sega Master System & Game Gear
 
 # Do not modify below
-declare -A rominfo
-rompaths=( [sfc]=$PATH_SNES [bin]=$PATH_MD [gb]=$PATH_GB [gba]=$PATH_GBA [sms]=$PATH_SMS [gg]=$PATH_SMS )
+declare -A rompaths
+rompaths=( [sfc]=snes [bin]=$PATH_MD [gb]=$PATH_GB [gba]=$PATH_GBA [sms]=$PATH_SMS [gg]=$PATH_SMS )
 
 for ext in "${!rompaths[@]}";
 do
@@ -44,7 +44,7 @@ do
 
     if [ $file ]
     then
-        destination=$DESTINATION_ROOT${rompaths[$i]}/
+        destination=$DESTINATION_ROOT${rompaths[$ext]}/
 
         # check if destination exists and create if we need to
         [ ! -d "$destination" ] && mkdir -p "$destination"
