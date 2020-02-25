@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/local/bin/bash
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,20 +19,27 @@
 # https://github.com/cwoodley/retrode-dumper
 
 SOURCE=/Volumes/Retrode
-DESTINATION=~/stuff/temp/
-EXTENSIONS=(sfc bin gb gba sms gg n64)
+DESTINATION_ROOT=~/stuff/temp/
 
-for i in "${EXTENSIONS[@]}";
+declare -A rominfo
+rominfo=( [sfc]=snes [bin]=gen [gb]=gameboy [gba]=gba [sms]=sms [gg]=gamegear )
+
+for i in "${!rominfo[@]}";
 do
     :
+    echo "Looking for $i files"
     # Look for rom files based on file extension
     file=$(find $SOURCE -maxdepth 1 -type f -name "*.$i")
 
     if [ $file ]
     then
-        echo "Copying $file..."
-        cp $file $DESTINATION
-        echo "\033[92mComplete\033[0m"
+        destination=$DESTINATION_ROOT${rominfo[$i]}/
+
+        [ ! -d "$destination" ] && mkdir -p "$destination"
+
+        echo "Copying $file to $destination"
+        cp $file $destination
+        echo -e "\e[92mComplete\e[0m"
         exit 0
     fi
 done
