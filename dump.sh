@@ -35,10 +35,11 @@ PATH_SMS=sms # Sega Master System & Game Gear
 declare -A rompaths
 rompaths=( [sfc]=$PATH_SNES [bin]=$PATH_MD [gb]=$PATH_GB [gba]=$PATH_GBA [sms]=$PATH_SMS [gg]=$PATH_SMS )
 
+echo "Looking for rom files in $SOURCE"
+
 for ext in "${!rompaths[@]}";
 do
     :
-    echo "Looking for .$ext files"
     # Look for rom files based on file extension
     file=$(find $SOURCE -maxdepth 1 -type f -name "*.$ext")
 
@@ -52,9 +53,19 @@ do
         echo "Copying $file to $destination"
         cp $file $destination
         echo -e "\e[92mComplete\e[0m"
-        exit 0
     fi
+
+    # TODO: rename file to boot0.rom so when we load the core, 
+    # it boots this rom automatically
 done
 
-echo "Didn't find any supported rom files in $SOURCE"
+
+# TODO: Figure out which core to load based on the rom's file extension
+# if [ $file_complete ]
+# then
+#     # load appropriate core
+#     echo load_core $(find /media/fat -type f -iname nes*.rbf) > /dev/MiSTer_cmd
+# fi
+
+echo "Couldn't find any supported rom files in $SOURCE"
 exit 1
