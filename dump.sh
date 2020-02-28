@@ -66,12 +66,13 @@ do
         rsync -avh --progress $source_file $destination
         echo -e "\e[92mCopy complete\e[0m\n"
 
-        echo -e "Setting up boot rom...\n"
-        dest_file=$(findFile $destination $ext)
-        ln -sfv $dest_file "${destination}boot0.rom"
-
         if [ $1 = "boot" ]
         then
+            echo -e "Setting up boot rom...\n"
+            dest_file=$(findFile $destination $ext)
+            ln -sfv $dest_file "${destination}boot0.rom"
+
+            echo "Let's rock! Loading ${core} core"
             # load appropriate core
             echo load_core $(find /media/fat -type f -iname ${core}*.rbf) > /dev/MiSTer_cmd
             exit 0
