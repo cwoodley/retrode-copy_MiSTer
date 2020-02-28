@@ -12,7 +12,7 @@ If ran with the `boot` option, the script will create a symlink to `boot0.rom` a
 
 
 ## User Configurable Options
-`SOURCE=/Volumes/Retrode` - Path where retrode has mounted
+`SOURCE=/Volumes/Retrode` - Path where retrode has mounted  
 `DESTINATION_ROOT=/games/` - Root path for roms to get copied to
 
 Subfolders where roms will get copied to e.g /games/snes:  
