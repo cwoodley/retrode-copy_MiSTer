@@ -35,37 +35,54 @@ PATH_SMS=sms # Sega Master System & Game Gear
 declare -A rompaths
 rompaths=( [sfc]=$PATH_SNES [bin]=$PATH_MD [gb]=$PATH_GB [gba]=$PATH_GBA [sms]=$PATH_SMS [gg]=$PATH_SMS )
 
-echo "Looking for rom files in $SOURCE"
+findFile () {
+    find $1 -maxdepth 1 -type f -name *.$2
+}
+
+if [ ! -d $SOURCE ]
+then
+    echo "Unable to find where Retrode is mounted, exiting"
+    exit 1
+fi
+
+echo -e "Looking for rom files in $SOURCE\n"
 
 for ext in "${!rompaths[@]}";
 do
     :
     # Look for rom files based on file extension
-    file=$(find $SOURCE -maxdepth 1 -type f -name "*.$ext")
+    source_file=$(findFile $SOURCE $ext)
 
-    if [ $file ]
+    if [ $source_file ]
     then
-        destination=$DESTINATION_ROOT${rompaths[$ext]}/
+        echo -e "Found a ${ext} file\n"
+        core=${rompaths[$ext]}
+        destination="${DESTINATION_ROOT}${rompaths[$ext]}/"
 
         # check if destination exists and create if we need to
         [ ! -d "$destination" ] && mkdir -p "$destination"
 
-        echo "Copying $file to $destination"
-        cp $file $destination
-        echo -e "\e[92mComplete\e[0m"
+        echo -e "Copying $source_file to $destination\n"
+        rsync -avh --progress $source_file $destination
+        echo -e "\e[92mCopy complete\e[0m\n"
+
+        echo -e "Setting up boot rom...\n"
+        dest_file=$(findFile $destination $ext)
+        ln -sfv $dest_file "${destination}boot0.rom"
+
+        if [ $1 = "boot" ]
+        then
+            # load appropriate core
+            echo load_core $(find /media/fat -type f -iname ${core}*.rbf) > /dev/MiSTer_cmd
+            exit 0
+        fi
+
+        echo -e "\nReady to rock! Load your $core core."
+
+        exit 0
     fi
 
-    # TODO: rename file to boot0.rom so when we load the core, 
-    # it boots this rom automatically
 done
-
-
-# TODO: Figure out which core to load based on the rom's file extension
-# if [ $file_complete ]
-# then
-#     # load appropriate core
-#     echo load_core $(find /media/fat -type f -iname nes*.rbf) > /dev/MiSTer_cmd
-# fi
 
 echo "Couldn't find any supported rom files in $SOURCE"
 exit 1
